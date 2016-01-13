@@ -12,6 +12,7 @@ import com.lodenrogue.equity.handranking.comparators.FullHouseComparator;
 import com.lodenrogue.equity.handranking.comparators.HighCardComparator;
 import com.lodenrogue.equity.handranking.comparators.OnePairComparator;
 import com.lodenrogue.equity.handranking.comparators.StraightComparator;
+import com.lodenrogue.equity.handranking.comparators.StraightFlushComparator;
 import com.lodenrogue.equity.handranking.comparators.ThreeOfAKindComparator;
 import com.lodenrogue.equity.handranking.comparators.TwoPairComparator;
 
@@ -83,7 +84,10 @@ public class HandRankUtils {
 
 		CardComparator comparator = new HighCardComparator();
 
-		if (hand1Rank.equals(HandRank.FOUR_OF_A_KIND)) {
+		if (hand1Rank.equals(HandRank.STRAIGHT_FLUSH)) {
+			comparator = new StraightFlushComparator();
+		}
+		else if (hand1Rank.equals(HandRank.FOUR_OF_A_KIND)) {
 			comparator = new FourOfAKindComparator();
 		}
 		else if (hand1Rank.equals(HandRank.FULL_HOUSE)) {

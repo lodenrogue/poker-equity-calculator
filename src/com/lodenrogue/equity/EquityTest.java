@@ -32,16 +32,16 @@ public class EquityTest {
 		Card[] hand2 = new Card[5];
 
 		hand1[0] = new Card(Rank.THREE, Suit.CLUB);
-		hand1[1] = new Card(Rank.THREE, Suit.CLUB);
-		hand1[2] = new Card(Rank.THREE, Suit.CLUB);
-		hand1[3] = new Card(Rank.THREE, Suit.CLUB);
-		hand1[4] = new Card(Rank.KING, Suit.CLUB);
+		hand1[1] = new Card(Rank.FOUR, Suit.CLUB);
+		hand1[2] = new Card(Rank.FIVE, Suit.CLUB);
+		hand1[3] = new Card(Rank.SIX, Suit.CLUB);
+		hand1[4] = new Card(Rank.SEVEN, Suit.CLUB);
 
-		hand2[0] = new Card(Rank.TWO, Suit.CLUB);
-		hand2[1] = new Card(Rank.TWO, Suit.CLUB);
-		hand2[2] = new Card(Rank.TWO, Suit.CLUB);
-		hand2[3] = new Card(Rank.TWO, Suit.CLUB);
-		hand2[4] = new Card(Rank.KING, Suit.CLUB);
+		hand2[0] = new Card(Rank.THREE, Suit.CLUB);
+		hand2[1] = new Card(Rank.FOUR, Suit.CLUB);
+		hand2[2] = new Card(Rank.FIVE, Suit.CLUB);
+		hand2[3] = new Card(Rank.SIX, Suit.CLUB);
+		hand2[4] = new Card(Rank.SEVEN, Suit.CLUB);
 
 		System.out.println(HandRankUtils.findRank(hand1));
 		System.out.println(HandRankUtils.compare(hand1, hand2));
