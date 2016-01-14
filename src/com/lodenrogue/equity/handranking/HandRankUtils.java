@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.lodenrogue.equity.Card;
+import com.lodenrogue.equity.Player;
 import com.lodenrogue.equity.Rank;
 import com.lodenrogue.equity.handranking.comparators.CardComparator;
 import com.lodenrogue.equity.handranking.comparators.FlushComparator;
@@ -20,6 +21,60 @@ public class HandRankUtils {
 
 	private HandRankUtils() {
 
+	}
+
+	public static List<Player> getWinners(List<Player> players, List<Card> communityCards) {
+		List<List<Card>> comboCards = combinePlayerCards(players, communityCards);
+		List<List<Card>> bestHands = getBestHands(comboCards);
+		List<Player> winners = findWinningPlayers(players, bestHands);
+		return winners;
+	}
+
+	private static List<Player> findWinningPlayers(List<Player> players, List<List<Card>> bestHands) {
+		List<Player> winners = new ArrayList<>();
+		winners.addAll(players);
+
+		for (int i = 0; i < bestHands.size() - 1; i++) {
+			int result = HandRankUtils.compare(bestHands.get(i), bestHands.get(i + 1));
+
+			// i is the winner
+			if (result == 1) {
+				// Remove the losing player/hand
+				bestHands.remove(i + 1);
+				winners.remove(i + 1);
+				i = -1;
+			}
+			// i + 1 is the winner
+			else if (result == -1) {
+				// Remove all previous players/hands
+				for (int j = 0; j < i + 1; j++) {
+					bestHands.remove(j);
+					winners.remove(j);
+				}
+				i = -1;
+			}
+		}
+		return winners;
+	}
+
+	private static List<List<Card>> getBestHands(List<List<Card>> playerCards) {
+		List<List<Card>> bestHands = new ArrayList<>();
+		for (List<Card> cards : playerCards) {
+			List<Card> bestHand = HandRankUtils.findBestHand(cards);
+			bestHands.add(bestHand);
+		}
+		return bestHands;
+	}
+
+	private static List<List<Card>> combinePlayerCards(List<Player> playersInHand, List<Card> community) {
+		List<List<Card>> playerCards = new ArrayList<>();
+		for (Player p : playersInHand) {
+			List<Card> cards = new ArrayList<>();
+			cards.addAll(p.getHand());
+			cards.addAll(community);
+			playerCards.add(cards);
+		}
+		return playerCards;
 	}
 
 	public static List<Card> findBestHand(List<Card> cards) {
