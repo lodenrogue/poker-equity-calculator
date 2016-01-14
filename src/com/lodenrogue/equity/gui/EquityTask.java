@@ -38,61 +38,80 @@ public class EquityTask implements Runnable {
 			Deck deck = new Deck();
 			deck.shuffle();
 
-			// Set random cards for players or remove set cards
-			for (Player player : playersInHand.keySet()) {
+			dealHoleCards(deck, playersInHand.keySet());
 
-				if (player.hasRandom()) {
-					player.getHand().clear();
-					player.addCard(deck.deal());
-					player.addCard(deck.deal());
-				}
-				else {
-					Card card1 = player.getHand().get(0);
-					Card card2 = player.getHand().get(1);
-					deck.getCard(card1.getRank(), card1.getSuit());
-					deck.getCard(card2.getRank(), card2.getSuit());
-				}
-			}
-
+			// Deal community cards and combine
 			List<Card> community = getCommunityCards(deck);
-			List<List<Card>> comboCards = getPlayerComboCards(community);
+			List<List<Card>> comboCards = combinePlayerCards(community);
+
+			// Find the best hands and winners
 			List<List<Card>> bestHands = getBestHands(comboCards);
-			List<Player> winners = getWinningPlayers(bestHands);
+			List<Player> winners = findWinningPlayers(bestHands);
 
 			for (Player p : winners) {
 				p.addWin();
 			}
-
-			if (iterations % 10_000 == 0) {
-				final DecimalFormat df = new DecimalFormat();
-				df.setMaximumFractionDigits(2);
-
-				long totalWins = 0;
-				for (Player p : playersInHand.keySet()) {
-					totalWins += p.getWins();
-				}
-				for (Player p : playersInHand.keySet()) {
-					final float pEquity = ((float) p.getWins() / totalWins) * 100f;
-					Platform.runLater(() -> playersInHand.get(p).setText(df.format(pEquity) + "%"));
-				}
-			}
-			iterations++;
+			updateEquity(iterations++);
 		}
 	}
 
-	private List<Player> getWinningPlayers(List<List<Card>> bestHands) {
-		Set<Player> playerSet = playersInHand.keySet();
+	private void dealHoleCards(Deck deck, Set<Player> players) {
+		for (Player player : players) {
+
+			if (player.hasRandom()) {
+				player.getHand().clear();
+				player.addCard(deck.deal());
+				player.addCard(deck.deal());
+			}
+			else {
+				Card card1 = player.getHand().get(0);
+				Card card2 = player.getHand().get(1);
+				deck.getCard(card1.getRank(), card1.getSuit());
+				deck.getCard(card2.getRank(), card2.getSuit());
+			}
+		}
+	}
+
+	private void updateEquity(long iterations) {
+		if (iterations % 10_000 == 0) {
+			final DecimalFormat df = new DecimalFormat();
+			df.setMaximumFractionDigits(2);
+
+			long totalWins = 0;
+			for (Player p : playersInHand.keySet()) {
+				totalWins += p.getWins();
+			}
+			for (Player p : playersInHand.keySet()) {
+				final float pEquity = ((float) p.getWins() / totalWins) * 100f;
+				Platform.runLater(() -> playersInHand.get(p).setText(df.format(pEquity) + "%"));
+			}
+		}
+	}
+
+	/**
+	 * Find winning best hand(s) and returns associated player(s) in a list
+	 * format
+	 * 
+	 * @param bestHands
+	 * @return
+	 */
+	private List<Player> findWinningPlayers(List<List<Card>> bestHands) {
 		List<Player> players = new ArrayList<>();
-		players.addAll(playerSet);
+		players.addAll(playersInHand.keySet());
 
 		for (int i = 0; i < bestHands.size() - 1; i++) {
 			int result = HandRankUtils.compare(bestHands.get(i), bestHands.get(i + 1));
+
+			// i is the winner
 			if (result == 1) {
+				// Remove the losing player/hand
 				bestHands.remove(i + 1);
 				players.remove(i + 1);
 				i = -1;
 			}
+			// i + 1 is the winner
 			else if (result == -1) {
+				// Remove all previous players/hands
 				for (int j = 0; j < i + 1; j++) {
 					bestHands.remove(j);
 					players.remove(j);
@@ -112,13 +131,13 @@ public class EquityTask implements Runnable {
 		return bestHands;
 	}
 
-	private List<List<Card>> getPlayerComboCards(List<Card> community) {
+	private List<List<Card>> combinePlayerCards(List<Card> community) {
 		List<List<Card>> playerCards = new ArrayList<>();
 		for (Player p : playersInHand.keySet()) {
-			List<Card> pCards = new ArrayList<>();
-			pCards.addAll(p.getHand());
-			pCards.addAll(community);
-			playerCards.add(pCards);
+			List<Card> cards = new ArrayList<>();
+			cards.addAll(p.getHand());
+			cards.addAll(community);
+			playerCards.add(cards);
 		}
 		return playerCards;
 	}
