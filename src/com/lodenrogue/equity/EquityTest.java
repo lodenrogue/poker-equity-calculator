@@ -1,5 +1,6 @@
 package com.lodenrogue.equity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.lodenrogue.equity.handranking.HandRank;
@@ -15,19 +16,88 @@ public class EquityTest {
 
 		// testCardRank(CardRank.STRAIGHT);
 
-		// Deck deck = new Deck();
-		// deck.shuffle();
-		// List<Card> cards = new ArrayList<Card>();
-		// for (int i = 0; i < 7; i++) {
-		// cards.add(deck.deal());
-		// }
-		//
-		// System.out.println(cards);
-		// List<Card> bestHand = HandRankUtils.findBestHand(cards);
-		// System.out.print(bestHand + " - ");
-		// System.out.println(HandRankUtils.findRank(bestHand.toArray(new
-		// Card[bestHand.size()])));
+		// testBestHand();
+		// testComparator();
 
+		// testCombinations(cards);
+
+		testEquity();
+	}
+
+	private static void testEquity() {
+		long iterations = 1;
+		long p1Wins = 0;
+		long p2Wins = 0;
+
+		while (iterations < 2_000_000) {
+			Player p1 = new Player("p1");
+			Player p2 = new Player("p2");
+
+			Deck deck = new Deck();
+			deck.shuffle();
+
+			p1.addCard(deck.getCard(Rank.ACE, Suit.SPADE));
+			p1.addCard(deck.getCard(Rank.ACE, Suit.DIAMOND));
+			p2.addCard(deck.getCard(Rank.TEN, Suit.HEART));
+			p2.addCard(deck.getCard(Rank.FOUR, Suit.SPADE));
+
+			List<Card> community = new ArrayList<>();
+			for (int i = 0; i < 5; i++) {
+				community.add(deck.deal());
+			}
+
+			List<Card> p1Cards = new ArrayList<>();
+			p1Cards.addAll(p1.getHand());
+			p1Cards.addAll(community);
+
+			List<Card> p2Cards = new ArrayList<>();
+			p2Cards.addAll(p2.getHand());
+			p2Cards.addAll(community);
+
+			List<Card> p1BestHand = HandRankUtils.findBestHand(p1Cards);
+			List<Card> p2BestHand = HandRankUtils.findBestHand(p2Cards);
+
+			int result = HandRankUtils.compare(p1BestHand, p2BestHand);
+			if (result == 1) {
+				p1Wins++;
+			}
+			else if (result == -1) {
+				p2Wins++;
+			}
+			else {
+				p1Wins++;
+				p2Wins++;
+			}
+
+			if (iterations % 10_000 == 0) {
+				System.out.println("Player 1 equity: " + ((float) p1Wins / iterations) * 100f);
+				System.out.println("Player 2 equity: " + ((float) p2Wins / iterations) * 100f);
+				System.out.println();
+			}
+
+			iterations++;
+		}
+	}
+
+	private static void testBestHand() {
+		Deck deck = new Deck();
+		HandRank rank = HandRank.HIGH_CARD;
+		while (!rank.equals(HandRank.STRAIGHT_FLUSH)) {
+			deck.shuffle();
+			List<Card> cards = new ArrayList<Card>();
+			for (int i = 0; i < 7; i++) {
+				cards.add(deck.deal());
+			}
+
+			System.out.println(cards);
+			List<Card> bestHand = HandRankUtils.findBestHand(cards);
+			System.out.print(bestHand + " - ");
+			rank = HandRankUtils.findRank(bestHand.toArray(new Card[bestHand.size()]));
+			System.out.println(rank);
+		}
+	}
+
+	private static void testComparator() {
 		Card[] hand1 = new Card[5];
 		Card[] hand2 = new Card[5];
 
@@ -45,9 +115,6 @@ public class EquityTest {
 
 		System.out.println(HandRankUtils.findRank(hand1));
 		System.out.println(HandRankUtils.compare(hand1, hand2));
-
-		// testCombinations(cards);
-
 	}
 
 	public static void testCombinations(List<Card> cards) {

@@ -24,41 +24,36 @@ public class HandRankUtils {
 
 	public static List<Card> findBestHand(List<Card> cards) {
 		if (cards.size() != 7) {
-			return null;
+			return new ArrayList<>();
 		}
-
-		HandRank cardRank = HandRank.HIGH_CARD;
 
 		List<Card[]> combinations = new ArrayList<>();
 		combinations = getCombinations(cards, new Card[5], 0, cards.size() - 1, 0, 5, combinations);
 		List<Card> bestHand = new ArrayList<>();
 
 		for (Card[] combo : combinations) {
-			HandRank comboRank = findRank(combo);
-
-			// TODO we don't need all these checks since compare
-			// will return 1, 0, -1 and we can just use that to
-			// decide the best hand
-
-			// If the value of this hand is equal to that of the
-			// best hand then compare and find the higher value hand
-			if (comboRank.getValue() == cardRank.getValue()) {
-				if (bestHand.size() > 0) {
-					int result = compare(bestHand.toArray(new Card[combo.length]), combo);
+			if (!bestHand.isEmpty()) {
+				int result = compare(bestHand.toArray(new Card[combo.length]), combo);
+				if (result == -1) {
+					bestHand = new ArrayList<>();
+					for (Card c : combo) {
+						bestHand.add(c);
+					}
 				}
-
 			}
-			else if (comboRank.getValue() > cardRank.getValue()) {
-				cardRank = comboRank;
+			else {
 				bestHand = new ArrayList<>();
 				for (Card c : combo) {
 					bestHand.add(c);
 				}
 			}
 		}
-
 		return bestHand;
 
+	}
+
+	public static int compare(List<Card> hand1, List<Card> hand2) {
+		return compare(hand1.toArray(new Card[hand1.size()]), hand2.toArray(new Card[hand2.size()]));
 	}
 
 	/**

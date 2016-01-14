@@ -47,4 +47,14 @@ public class Deck {
 		return Arrays.toString(userDeck.toArray());
 	}
 
+	public Card getCard(Rank rank, Suit suit) {
+		for (Card card : userDeck) {
+			if (card.getRank().equals(rank) && card.getSuit().equals(suit)) {
+				userDeck.remove(card);
+				return card;
+			}
+		}
+		return null;
+	}
+
 }
