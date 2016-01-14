@@ -38,56 +38,56 @@
                <children>
                   <Button mnemonicParsing="false" prefWidth="75.0" text="Player 4" />
                   <Button mnemonicParsing="false" prefHeight="27.0" prefWidth="39.0" text="RD" />
-                  <TextField prefHeight="27.0" prefWidth="150.0" />
-                  <TextField editable="false" prefHeight="27.0" prefWidth="65.0" />
+                  <TextField fx:id="p4CardsField" prefHeight="27.0" prefWidth="150.0" />
+                  <TextField fx:id="p4EquityField" editable="false" prefHeight="27.0" prefWidth="65.0" />
                </children>
             </HBox>
             <HBox spacing="5.0">
                <children>
                   <Button mnemonicParsing="false" prefWidth="75.0" text="Player 5" />
                   <Button mnemonicParsing="false" prefHeight="27.0" prefWidth="39.0" text="RD" />
-                  <TextField prefHeight="27.0" prefWidth="150.0" />
-                  <TextField editable="false" prefHeight="27.0" prefWidth="65.0" />
+                  <TextField fx:id="p5CardsField" prefHeight="27.0" prefWidth="150.0" />
+                  <TextField fx:id="p5EquityField" editable="false" prefHeight="27.0" prefWidth="65.0" />
                </children>
             </HBox>
             <HBox spacing="5.0">
                <children>
                   <Button mnemonicParsing="false" prefWidth="75.0" text="Player 6" />
                   <Button mnemonicParsing="false" prefHeight="27.0" prefWidth="39.0" text="RD" />
-                  <TextField prefHeight="27.0" prefWidth="150.0" />
-                  <TextField editable="false" prefHeight="27.0" prefWidth="65.0" />
+                  <TextField fx:id="p6CardsField" prefHeight="27.0" prefWidth="150.0" />
+                  <TextField fx:id="p6EquityField" editable="false" prefHeight="27.0" prefWidth="65.0" />
                </children>
             </HBox>
             <HBox spacing="5.0">
                <children>
                   <Button mnemonicParsing="false" prefWidth="75.0" text="Player 7" />
                   <Button mnemonicParsing="false" prefHeight="27.0" prefWidth="39.0" text="RD" />
-                  <TextField prefHeight="27.0" prefWidth="150.0" />
-                  <TextField editable="false" prefHeight="27.0" prefWidth="65.0" />
+                  <TextField fx:id="p7CardsField" prefHeight="27.0" prefWidth="150.0" />
+                  <TextField fx:id="p7EquityField" editable="false" prefHeight="27.0" prefWidth="65.0" />
                </children>
             </HBox>
             <HBox spacing="5.0">
                <children>
                   <Button mnemonicParsing="false" prefWidth="75.0" text="Player 8" />
                   <Button mnemonicParsing="false" prefHeight="27.0" prefWidth="39.0" text="RD" />
-                  <TextField prefHeight="27.0" prefWidth="150.0" />
-                  <TextField editable="false" prefHeight="27.0" prefWidth="65.0" />
+                  <TextField fx:id="p8CardsField" prefHeight="27.0" prefWidth="150.0" />
+                  <TextField fx:id="p8EquityField" editable="false" prefHeight="27.0" prefWidth="65.0" />
                </children>
             </HBox>
             <HBox spacing="5.0">
                <children>
                   <Button mnemonicParsing="false" prefWidth="75.0" text="Player 9" />
                   <Button mnemonicParsing="false" prefHeight="27.0" prefWidth="39.0" text="RD" />
-                  <TextField prefHeight="27.0" prefWidth="150.0" />
-                  <TextField editable="false" prefHeight="27.0" prefWidth="65.0" />
+                  <TextField fx:id="p9CardsField" prefHeight="27.0" prefWidth="150.0" />
+                  <TextField fx:id="p9EquityField" editable="false" prefHeight="27.0" prefWidth="65.0" />
                </children>
             </HBox>
             <HBox spacing="5.0">
                <children>
                   <Button mnemonicParsing="false" prefWidth="75.0" text="Player 10" />
                   <Button mnemonicParsing="false" prefHeight="27.0" prefWidth="39.0" text="RD" />
-                  <TextField prefHeight="27.0" prefWidth="150.0" />
-                  <TextField editable="false" prefHeight="27.0" prefWidth="65.0" />
+                  <TextField fx:id="p10CardsField" prefHeight="27.0" prefWidth="150.0" />
+                  <TextField fx:id="p10EquityField" editable="false" prefHeight="27.0" prefWidth="65.0" />
                </children>
             </HBox>
          </children>

@@ -22,6 +22,7 @@ public class EquityTest {
 		// testCombinations(cards);
 
 		testEquity();
+
 	}
 
 	private static void testEquity() {
@@ -36,10 +37,10 @@ public class EquityTest {
 			Deck deck = new Deck();
 			deck.shuffle();
 
+			p1.addCard(deck.getCard(Rank.ACE, Suit.CLUB));
 			p1.addCard(deck.getCard(Rank.ACE, Suit.SPADE));
-			p1.addCard(deck.getCard(Rank.ACE, Suit.DIAMOND));
-			p2.addCard(deck.deal());
-			p2.addCard(deck.deal());
+			p2.addCard(deck.getCard(Rank.FIVE, Suit.DIAMOND));
+			p2.addCard(deck.getCard(Rank.TWO, Suit.HEART));
 
 			List<Card> community = new ArrayList<>();
 			for (int i = 0; i < 5; i++) {

@@ -24,7 +24,7 @@ public class StraightStrategy implements RankStrategy {
 			}
 			ranks[i++] = r;
 		}
-		
+
 		int[] numValues = HandRankUtils.getNumericValues(ranks, includes2);
 		return isStraight(numValues);
 	}

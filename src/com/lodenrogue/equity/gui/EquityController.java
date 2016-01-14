@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 import com.lodenrogue.equity.Card;
 import com.lodenrogue.equity.CardUtils;
@@ -35,6 +36,34 @@ public class EquityController implements Initializable {
 	@FXML
 	private TextField p3EquityField;
 	@FXML
+	private TextField p4CardsField;
+	@FXML
+	private TextField p4EquityField;
+	@FXML
+	private TextField p5CardsField;
+	@FXML
+	private TextField p5EquityField;
+	@FXML
+	private TextField p6CardsField;
+	@FXML
+	private TextField p6EquityField;
+	@FXML
+	private TextField p7CardsField;
+	@FXML
+	private TextField p7EquityField;
+	@FXML
+	private TextField p8CardsField;
+	@FXML
+	private TextField p8EquityField;
+	@FXML
+	private TextField p9CardsField;
+	@FXML
+	private TextField p9EquityField;
+	@FXML
+	private TextField p10CardsField;
+	@FXML
+	private TextField p10EquityField;
+	@FXML
 	private Button evaluateBtn;
 	@FXML
 	private Button clearBtn;
@@ -58,15 +87,14 @@ public class EquityController implements Initializable {
 			}
 		}
 		else if (e.getSource().equals(clearBtn)) {
+			if (isEquityRunning) {
+				stopEquity();
+			}
 			clearAllFields();
 		}
 	}
 
 	private void clearAllFields() {
-		if (isEquityRunning) {
-			stopEquity();
-		}
-
 		p1CardsField.clear();
 		p1EquityField.clear();
 		p2CardsField.clear();
@@ -82,62 +110,73 @@ public class EquityController implements Initializable {
 	}
 
 	private void getEquity() {
-		String p1CardsString = p1CardsField.getText();
-		String p2CardsString = p2CardsField.getText();
-		String p3CardsString = p3CardsField.getText();
-
-		List<Card> p1Hand = null;
-		List<Card> p2Hand = null;
-		List<Card> p3Hand = null;
-
 		Deck deck = new Deck();
-
-		try {
-			p1Hand = parseCards(deck, p1CardsString);
-		}
-		catch (InvalidFormatException e) {
-			// TODO let the user know
-		}
-
-		try {
-			p2Hand = parseCards(deck, p2CardsString);
-		}
-		catch (InvalidFormatException e) {
-			// TODO Let the user know
-		}
-
-		try {
-			p3Hand = parseCards(deck, p3CardsString);
-		}
-		catch (InvalidFormatException e) {
-			// TODO Let the user know
-		}
-
-		if (p1Hand == null || p2Hand == null || p3Hand == null) {
-			return;
-		}
-
-		Player p1 = new Player("Player 1");
-		Player p2 = new Player("Player 2");
-		Player p3 = new Player("Player 3");
-
-		p1.addCard(p1Hand.get(0));
-		p1.addCard(p1Hand.get(1));
-		p2.addCard(p2Hand.get(0));
-		p2.addCard(p2Hand.get(1));
-		p3.addCard(p3Hand.get(0));
-		p3.addCard(p3Hand.get(1));
+		deck.shuffle();
 
 		LinkedHashMap<Player, TextField> playersInHand = new LinkedHashMap<>();
-		playersInHand.put(p1, p1EquityField);
-		playersInHand.put(p2, p2EquityField);
-		playersInHand.put(p3, p3EquityField);
+		LinkedHashMap<TextField, TextField> equityFieldMap = getEquityFieldMap();
+
+		for (TextField cardField : equityFieldMap.keySet()) {
+			try {
+				List<Card> hand = parseCards(deck, cardField.getText());
+
+				Player player = new Player("Player " + UUID.randomUUID());
+				if (cardField.getText().equalsIgnoreCase("random")) {
+					player.setHasRandom(true);
+				}
+
+				player.addCard(hand.get(0));
+				player.addCard(hand.get(1));
+				playersInHand.put(player, equityFieldMap.get(cardField));
+			}
+			catch (InvalidFormatException e) {
+				// TODO let the user know
+				System.out.println("invalid format temp()");
+				return;
+			}
+		}
 
 		equityTask = new EquityTask(playersInHand);
 		new Thread(equityTask).start();
 		isEquityRunning = true;
 
 		Platform.runLater(() -> evaluateBtn.setText("Stop"));
+	}
+
+	private LinkedHashMap<TextField, TextField> getEquityFieldMap() {
+		LinkedHashMap<TextField, TextField> equityFieldMap = new LinkedHashMap<>();
+
+		if (p1CardsField.getText().length() > 0) {
+			equityFieldMap.put(p1CardsField, p1EquityField);
+		}
+		if (p2CardsField.getText().length() > 0) {
+			equityFieldMap.put(p2CardsField, p2EquityField);
+		}
+		if (p3CardsField.getText().length() > 0) {
+			equityFieldMap.put(p3CardsField, p3EquityField);
+		}
+		if (p4CardsField.getText().length() > 0) {
+			equityFieldMap.put(p4CardsField, p4EquityField);
+		}
+		if (p5CardsField.getText().length() > 0) {
+			equityFieldMap.put(p5CardsField, p5EquityField);
+		}
+		if (p6CardsField.getText().length() > 0) {
+			equityFieldMap.put(p6CardsField, p6EquityField);
+		}
+		if (p7CardsField.getText().length() > 0) {
+			equityFieldMap.put(p7CardsField, p7EquityField);
+		}
+		if (p8CardsField.getText().length() > 0) {
+			equityFieldMap.put(p8CardsField, p8EquityField);
+		}
+		if (p9CardsField.getText().length() > 0) {
+			equityFieldMap.put(p9CardsField, p9EquityField);
+		}
+		if (p10CardsField.getText().length() > 0) {
+			equityFieldMap.put(p10CardsField, p10EquityField);
+		}
+		return equityFieldMap;
 	}
 
 	private List<Card> parseCards(Deck deck, String cards) throws InvalidFormatException {
