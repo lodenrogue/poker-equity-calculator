@@ -1,8 +1,8 @@
 package com.lodenrogue.equity.gui;
 
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -12,7 +12,6 @@ import com.lodenrogue.equity.Deck;
 import com.lodenrogue.equity.Player;
 import com.lodenrogue.equity.Rank;
 import com.lodenrogue.equity.Suit;
-import com.lodenrogue.equity.handranking.HandRankUtils;
 import com.sun.media.sound.InvalidFormatException;
 
 import javafx.application.Platform;
@@ -31,9 +30,17 @@ public class EquityController implements Initializable {
 	private TextField p2CardsField;
 	@FXML
 	private TextField p2EquityField;
-
+	@FXML
+	private TextField p3CardsField;
+	@FXML
+	private TextField p3EquityField;
 	@FXML
 	private Button evaluateBtn;
+	@FXML
+	private Button clearBtn;
+
+	private EquityTask equityTask;
+	private boolean isEquityRunning = false;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -43,95 +50,94 @@ public class EquityController implements Initializable {
 	@FXML
 	public void onButtonPressed(ActionEvent e) {
 		if (e.getSource().equals(evaluateBtn)) {
-			getEquity();
+			if (isEquityRunning) {
+				stopEquity();
+			}
+			else {
+				getEquity();
+			}
+		}
+		else if (e.getSource().equals(clearBtn)) {
+			clearAllFields();
 		}
 	}
 
+	private void clearAllFields() {
+		if (isEquityRunning) {
+			stopEquity();
+		}
+
+		p1CardsField.clear();
+		p1EquityField.clear();
+		p2CardsField.clear();
+		p2EquityField.clear();
+		p3CardsField.clear();
+		p3EquityField.clear();
+	}
+
+	private void stopEquity() {
+		equityTask.setContinue(false);
+		isEquityRunning = false;
+		Platform.runLater(() -> evaluateBtn.setText("Evaluate"));
+	}
+
 	private void getEquity() {
-		Runnable task = () -> {
-			String p1CardsString = p1CardsField.getText();
-			String p2CardsString = p2CardsField.getText();
+		String p1CardsString = p1CardsField.getText();
+		String p2CardsString = p2CardsField.getText();
+		String p3CardsString = p3CardsField.getText();
 
-			long iterations = 1;
-			long p1Wins = 0;
-			long p2Wins = 0;
+		List<Card> p1Hand = null;
+		List<Card> p2Hand = null;
+		List<Card> p3Hand = null;
 
-			while (iterations < 1_000_000) {
-				Deck deck = new Deck();
-				deck.shuffle();
+		Deck deck = new Deck();
 
-				List<Card> p1Hand = null;
-				List<Card> p2Hand = null;
+		try {
+			p1Hand = parseCards(deck, p1CardsString);
+		}
+		catch (InvalidFormatException e) {
+			// TODO let the user know
+		}
 
-				try {
-					p1Hand = parseCards(deck, p1CardsString);
-				}
-				catch (InvalidFormatException e) {
-					// TODO let the user know
-				}
+		try {
+			p2Hand = parseCards(deck, p2CardsString);
+		}
+		catch (InvalidFormatException e) {
+			// TODO Let the user know
+		}
 
-				try {
-					p2Hand = parseCards(deck, p2CardsString);
-				}
-				catch (InvalidFormatException e) {
-					// TODO Let the user know
-				}
+		try {
+			p3Hand = parseCards(deck, p3CardsString);
+		}
+		catch (InvalidFormatException e) {
+			// TODO Let the user know
+		}
 
-				if (p1Hand == null || p2Hand == null) {
-					return;
-				}
+		if (p1Hand == null || p2Hand == null || p3Hand == null) {
+			return;
+		}
 
-				Player p1 = new Player("Player 1");
-				Player p2 = new Player("Player 2");
+		Player p1 = new Player("Player 1");
+		Player p2 = new Player("Player 2");
+		Player p3 = new Player("Player 3");
 
-				p1.addCard(p1Hand.get(0));
-				p1.addCard(p1Hand.get(1));
-				p2.addCard(p2Hand.get(0));
-				p2.addCard(p2Hand.get(1));
+		p1.addCard(p1Hand.get(0));
+		p1.addCard(p1Hand.get(1));
+		p2.addCard(p2Hand.get(0));
+		p2.addCard(p2Hand.get(1));
+		p3.addCard(p3Hand.get(0));
+		p3.addCard(p3Hand.get(1));
 
-				List<Card> community = new ArrayList<>();
-				for (int i = 0; i < 5; i++) {
-					community.add(deck.deal());
-				}
+		LinkedHashMap<Player, TextField> playersInHand = new LinkedHashMap<>();
+		playersInHand.put(p1, p1EquityField);
+		playersInHand.put(p2, p2EquityField);
+		playersInHand.put(p3, p3EquityField);
 
-				List<Card> p1Cards = new ArrayList<>();
-				p1Cards.addAll(p1.getHand());
-				p1Cards.addAll(community);
+		equityTask = new EquityTask(playersInHand);
+		new Thread(equityTask).start();
+		isEquityRunning = true;
 
-				List<Card> p2Cards = new ArrayList<>();
-				p2Cards.addAll(p2.getHand());
-				p2Cards.addAll(community);
-
-				List<Card> p1BestHand = HandRankUtils.findBestHand(p1Cards);
-				List<Card> p2BestHand = HandRankUtils.findBestHand(p2Cards);
-
-				int result = HandRankUtils.compare(p1BestHand, p2BestHand);
-				if (result == 1) {
-					p1Wins++;
-				}
-				else if (result == -1) {
-					p2Wins++;
-				}
-				else {
-					p1Wins++;
-					p2Wins++;
-				}
-
-				if (iterations % 10_000 == 0) {
-					final DecimalFormat df = new DecimalFormat();
-					df.setMaximumFractionDigits(2);
-
-					final float p1Equity = ((float) p1Wins / iterations) * 100f;
-					final float p2Equity = ((float) p2Wins / iterations) * 100f;
-
-					Platform.runLater(() -> p1EquityField.setText(df.format(p1Equity) + "%"));
-					Platform.runLater(() -> p2EquityField.setText(df.format(p2Equity) + "%"));
-				}
-
-				iterations++;
-			}
-		};
-		new Thread(task).start();
+		Platform.runLater(() -> evaluateBtn.setText("Stop"));
 	}
 
 	private List<Card> parseCards(Deck deck, String cards) throws InvalidFormatException {
@@ -170,7 +176,6 @@ public class EquityController implements Initializable {
 			cardList.add(new Card(rank2, suit2));
 			return cardList;
 		}
-
 	}
 
 }

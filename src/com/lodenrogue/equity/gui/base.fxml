@@ -4,7 +4,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="407.0" prefWidth="551.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lodenrogue.equity.gui.EquityController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="398.0" prefWidth="551.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lodenrogue.equity.gui.EquityController">
    <children>
       <Label layoutX="145.0" layoutY="7.0" text="Hand" />
       <Label layoutX="300.0" layoutY="7.0" text="Equity" />
@@ -30,8 +30,8 @@
                <children>
                   <Button mnemonicParsing="false" prefWidth="75.0" text="Player 3" />
                   <Button mnemonicParsing="false" prefHeight="27.0" prefWidth="39.0" text="RD" />
-                  <TextField prefHeight="27.0" prefWidth="150.0" />
-                  <TextField editable="false" prefHeight="27.0" prefWidth="65.0" />
+                  <TextField fx:id="p3CardsField" prefHeight="27.0" prefWidth="150.0" />
+                  <TextField fx:id="p3EquityField" editable="false" prefHeight="27.0" prefWidth="65.0" />
                </children>
             </HBox>
             <HBox spacing="5.0">
@@ -93,6 +93,6 @@
          </children>
       </VBox>
       <Button fx:id="evaluateBtn" layoutX="405.0" layoutY="206.0" mnemonicParsing="false" onAction="#onButtonPressed" prefHeight="80.0" prefWidth="100.0" text="Evaluate" />
-      <Button layoutX="406.0" layoutY="303.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="100.0" text="Clear All" />
+      <Button fx:id="clearBtn" layoutX="406.0" layoutY="303.0" mnemonicParsing="false" onAction="#onButtonPressed" prefHeight="27.0" prefWidth="100.0" text="Clear All" />
    </children>
 </AnchorPane>
