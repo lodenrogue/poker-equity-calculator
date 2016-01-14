@@ -6,11 +6,13 @@ import java.util.List;
 public class Player {
 	private String name;
 	private List<Card> hand;
-	private boolean inHand = false;
+	private boolean hasRandom = false;
+	private long wins;
 
 	public Player(String username) {
 		this.name = username;
 		hand = new ArrayList<Card>();
+		wins = 0;
 	}
 
 	public void addCard(Card card) {
@@ -21,15 +23,23 @@ public class Player {
 		return hand;
 	}
 
-	public boolean isInHand() {
-		return inHand;
+	public boolean hasRandom() {
+		return hasRandom;
 	}
 
-	public void setInHand(boolean inHand) {
-		this.inHand = inHand;
+	public void setHasRandom(boolean hasRandom) {
+		this.hasRandom = hasRandom;
 	}
-	
-	public String getName(){
+
+	public String getName() {
 		return name;
+	}
+
+	public void addWin() {
+		wins++;
+	}
+
+	public long getWins() {
+		return wins;
 	}
 }
