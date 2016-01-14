@@ -38,8 +38,8 @@ public class EquityTest {
 
 			p1.addCard(deck.getCard(Rank.ACE, Suit.SPADE));
 			p1.addCard(deck.getCard(Rank.ACE, Suit.DIAMOND));
-			p2.addCard(deck.getCard(Rank.TEN, Suit.HEART));
-			p2.addCard(deck.getCard(Rank.FOUR, Suit.SPADE));
+			p2.addCard(deck.deal());
+			p2.addCard(deck.deal());
 
 			List<Card> community = new ArrayList<>();
 			for (int i = 0; i < 5; i++) {
