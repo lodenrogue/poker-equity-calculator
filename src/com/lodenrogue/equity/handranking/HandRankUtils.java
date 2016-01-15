@@ -46,10 +46,20 @@ public class HandRankUtils {
 			}
 			// i + 1 is the winner
 			else if (result == -1) {
-				// Remove all previous players/hands
+				// Make a list of the hands and players to
+				// remove
+				List<List<Card>> removeBestHands = new ArrayList<>();
+				List<Player> removePlayers = new ArrayList<>();
+
 				for (int j = 0; j < i + 1; j++) {
-					bestHands.remove(j);
-					winners.remove(j);
+					removeBestHands.add(bestHands.get(j));
+					removePlayers.add(winners.get(j));
+				}
+
+				// Remove hands and players from lists
+				for (int j = 0; j < removeBestHands.size(); j++) {
+					bestHands.remove(removeBestHands.get(j));
+					winners.remove(removePlayers.get(j));
 				}
 				i = -1;
 			}
