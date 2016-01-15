@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox spacing="5.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lodenrogue.equity.gui.RowController">
+   <children>
+      <Button fx:id="playerBtn" focusTraversable="false" mnemonicParsing="false" prefWidth="75.0" text="Player 1" />
+      <Button fx:id="randomBtn" focusTraversable="false" mnemonicParsing="false" onAction="#onButtonPressed" prefHeight="27.0" prefWidth="39.0" text="RD" />
+      <TextField fx:id="handField" prefHeight="27.0" prefWidth="150.0" />
+      <TextField fx:id="equityField" editable="false" focusTraversable="false" prefHeight="27.0" prefWidth="65.0" />
+   </children>
+</HBox>

@@ -14,14 +14,13 @@ import com.lodenrogue.equity.Player;
 import com.lodenrogue.equity.handranking.HandRankUtils;
 
 import javafx.application.Platform;
-import javafx.scene.control.TextField;
 
 public class EquityTask implements Runnable {
-	private Map<Player, TextField> playersInHand;
+	private Map<Player, RowController> playerRows;
 	private boolean continueEval = true;
 
-	public EquityTask(LinkedHashMap<Player, TextField> playersInHand) {
-		this.playersInHand = playersInHand;
+	public EquityTask(LinkedHashMap<Player, RowController> playerRows) {
+		this.playerRows = playerRows;
 	}
 
 	public void setContinue(boolean continueEval) {
@@ -31,18 +30,18 @@ public class EquityTask implements Runnable {
 	@Override
 	public void run() {
 		int iterations = 1;
-		int[] playerWins = new int[playersInHand.size()];
+		int[] playerWins = new int[playerRows.size()];
 		Arrays.fill(playerWins, 0);
 
 		while (iterations < 1_000_000 && continueEval) {
 			Deck deck = new Deck();
 			deck.shuffle();
 
-			dealHoleCards(deck, playersInHand.keySet());
+			dealHoleCards(deck, playerRows.keySet());
 			List<Card> community = getCommunityCards(deck);
 
 			List<Player> players = new ArrayList<>();
-			players.addAll(playersInHand.keySet());
+			players.addAll(playerRows.keySet());
 
 			List<Player> winners = HandRankUtils.getWinners(players, community);
 			for (Player p : winners) {
@@ -76,13 +75,13 @@ public class EquityTask implements Runnable {
 			df.setMaximumFractionDigits(2);
 
 			int totalWins = 0;
-			for (Player p : playersInHand.keySet()) {
+			for (Player p : playerRows.keySet()) {
 				totalWins += p.getWins();
 			}
 
-			for (Player p : playersInHand.keySet()) {
+			for (Player p : playerRows.keySet()) {
 				final float pEquity = ((float) p.getWins() / totalWins) * 100f;
-				Platform.runLater(() -> playersInHand.get(p).setText(df.format(pEquity) + "%"));
+				Platform.runLater(() -> playerRows.get(p).setEquity(df.format(pEquity) + "%"));
 			}
 		}
 	}

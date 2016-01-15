@@ -1,5 +1,8 @@
 package com.lodenrogue.equity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CardUtils {
 
 	private CardUtils() {
@@ -63,6 +66,43 @@ public class CardUtils {
 			return Rank.KING;
 		}
 		return null;
+	}
+
+	public static List<Card> parseCards(String cards, Deck deck) {
+		List<Card> cardList = new ArrayList<>();
+
+		if (cards.equalsIgnoreCase("random")) {
+			cardList.add(deck.deal());
+			cardList.add(deck.deal());
+		}
+		else {
+			if (cards.length() != 4) {
+				return null;
+			}
+
+			char[] chars = cards.toCharArray();
+			Rank rank1 = CardUtils.getRank(chars[0]);
+			Suit suit1 = CardUtils.getSuit(chars[1]);
+
+			Rank rank2 = CardUtils.getRank(chars[2]);
+			Suit suit2 = CardUtils.getSuit(chars[3]);
+
+			if (rank1 == null || suit1 == null || rank2 == null || suit2 == null) {
+				return null;
+			}
+
+			Card card1 = deck.getCard(rank1, suit1);
+			Card card2 = deck.getCard(rank2, suit2);
+
+			if (card1 == null || card2 == null) {
+				return null;
+			}
+
+			cardList.add(new Card(rank1, suit1));
+			cardList.add(new Card(rank2, suit2));
+		}
+
+		return cardList;
 	}
 
 }

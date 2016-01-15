@@ -1,11 +1,10 @@
 package com.lodenrogue.equity.gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
@@ -13,78 +12,19 @@ import com.lodenrogue.equity.Card;
 import com.lodenrogue.equity.CardUtils;
 import com.lodenrogue.equity.Deck;
 import com.lodenrogue.equity.Player;
-import com.lodenrogue.equity.Rank;
-import com.lodenrogue.equity.Suit;
-import com.sun.media.sound.InvalidFormatException;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 
 public class EquityController implements Initializable {
 	@FXML
-	private Button p1RandomBtn;
-	@FXML
-	private TextField p1CardsField;
-	@FXML
-	private TextField p1EquityField;
-	@FXML
-	private Button p2RandomBtn;
-	@FXML
-	private TextField p2CardsField;
-	@FXML
-	private TextField p2EquityField;
-	@FXML
-	private Button p3RandomBtn;
-	@FXML
-	private TextField p3CardsField;
-	@FXML
-	private TextField p3EquityField;
-	@FXML
-	private Button p4RandomBtn;
-	@FXML
-	private TextField p4CardsField;
-	@FXML
-	private TextField p4EquityField;
-	@FXML
-	private Button p5RandomBtn;
-	@FXML
-	private TextField p5CardsField;
-	@FXML
-	private TextField p5EquityField;
-	@FXML
-	private Button p6RandomBtn;
-	@FXML
-	private TextField p6CardsField;
-	@FXML
-	private TextField p6EquityField;
-	@FXML
-	private Button p7RandomBtn;
-	@FXML
-	private TextField p7CardsField;
-	@FXML
-	private TextField p7EquityField;
-	@FXML
-	private Button p8RandomBtn;
-	@FXML
-	private TextField p8CardsField;
-	@FXML
-	private TextField p8EquityField;
-	@FXML
-	private Button p9RandomBtn;
-	@FXML
-	private TextField p9CardsField;
-	@FXML
-	private TextField p9EquityField;
-	@FXML
-	private Button p10RandomBtn;
-	@FXML
-	private TextField p10CardsField;
-	@FXML
-	private TextField p10EquityField;
+	private VBox vBox;
 	@FXML
 	private Button evaluateBtn;
 	@FXML
@@ -92,11 +32,31 @@ public class EquityController implements Initializable {
 
 	private EquityTask equityTask;
 	private boolean isEquityRunning = false;
-	private Map<Button, TextField> randomCardFieldMap;
+
+	private List<RowController> rows;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		Platform.runLater(() -> randomCardFieldMap = createRandomCardMap());
+		Platform.runLater(() -> initializeRows());
+	}
+
+	private void initializeRows() {
+		rows = new ArrayList<>();
+		for (int i = 1; i <= 10; i++) {
+			try {
+				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("row.fxml"));
+				Parent p = fxmlLoader.load();
+
+				RowController row = ((RowController) fxmlLoader.getController());
+				row.setPlayerName("Player " + i);
+				rows.add(row);
+
+				vBox.getChildren().add(p);
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@FXML
@@ -117,43 +77,41 @@ public class EquityController implements Initializable {
 		}
 	}
 
-	@FXML
-	public void onRandomButtonPressed(ActionEvent e) {
-		TextField field = randomCardFieldMap.get(((Button) e.getSource()));
-		field.setText("random");
-	}
-
 	private void getEquity() {
+		clearEquityFields();
+
 		Deck deck = new Deck();
 		deck.shuffle();
-	
-		LinkedHashMap<Player, TextField> playersInHand = new LinkedHashMap<>();
-		Map<TextField, TextField> cardEquityFieldMap = createCardEquityMap();
-	
-		for (TextField cardField : cardEquityFieldMap.keySet()) {
-			try {
-				List<Card> hand = parseCards(deck, cardField.getText());
-	
+
+		LinkedHashMap<Player, RowController> playerRows = new LinkedHashMap<>();
+
+		for (RowController row : rows) {
+			if (row.getHand().length() > 0) {
+				List<Card> hand = CardUtils.parseCards(row.getHand(), deck);
+				if (hand == null) {
+					// TODO let the user know
+					System.out.println("Invalid hand format");
+					return;
+				}
+
 				Player player = new Player("Player " + UUID.randomUUID());
-				if (cardField.getText().equalsIgnoreCase("random")) {
+				if (row.getHand().equalsIgnoreCase("random")) {
 					player.setHasRandom(true);
 				}
-	
+
 				player.addCard(hand.get(0));
 				player.addCard(hand.get(1));
-				playersInHand.put(player, cardEquityFieldMap.get(cardField));
-			}
-			catch (InvalidFormatException e) {
-				// TODO
-				return;
+				playerRows.put(player, row);
 			}
 		}
-	
-		equityTask = new EquityTask(playersInHand);
-		new Thread(equityTask).start();
-		isEquityRunning = true;
-	
-		Platform.runLater(() -> evaluateBtn.setText("Stop"));
+
+		if (playerRows.size() > 0) {
+			equityTask = new EquityTask(playerRows);
+			new Thread(equityTask).start();
+			isEquityRunning = true;
+
+			Platform.runLater(() -> evaluateBtn.setText("Stop"));
+		}
 	}
 
 	private void stopEquity() {
@@ -162,116 +120,15 @@ public class EquityController implements Initializable {
 		Platform.runLater(() -> evaluateBtn.setText("Evaluate"));
 	}
 
-	private List<Card> parseCards(Deck deck, String cards) throws InvalidFormatException {
-		if (cards.equalsIgnoreCase("random")) {
-			List<Card> cardList = new ArrayList<>();
-			cardList.add(deck.deal());
-			cardList.add(deck.deal());
-			return cardList;
-	
-		}
-		else {
-			if (cards.length() != 4) {
-				throw new InvalidFormatException();
-			}
-	
-			char[] chars = cards.toCharArray();
-			Rank rank1 = CardUtils.getRank(chars[0]);
-			Suit suit1 = CardUtils.getSuit(chars[1]);
-	
-			Rank rank2 = CardUtils.getRank(chars[2]);
-			Suit suit2 = CardUtils.getSuit(chars[3]);
-	
-			if (rank1 == null || suit1 == null || rank2 == null || suit2 == null) {
-				throw new InvalidFormatException();
-			}
-	
-			List<Card> cardList = new ArrayList<>();
-			Card card1 = deck.getCard(rank1, suit1);
-			Card card2 = deck.getCard(rank2, suit2);
-	
-			if (card1 == null || card2 == null) {
-				throw new InvalidFormatException();
-			}
-	
-			cardList.add(new Card(rank1, suit1));
-			cardList.add(new Card(rank2, suit2));
-			return cardList;
+	private void clearEquityFields() {
+		for (RowController row : rows) {
+			row.clearEquity();
 		}
 	}
 
 	private void clearAllFields() {
-		p1CardsField.clear();
-		p1EquityField.clear();
-		p2CardsField.clear();
-		p2EquityField.clear();
-		p3CardsField.clear();
-		p3EquityField.clear();
-		p4CardsField.clear();
-		p4EquityField.clear();
-		p5CardsField.clear();
-		p5EquityField.clear();
-		p6CardsField.clear();
-		p6EquityField.clear();
-		p7CardsField.clear();
-		p7EquityField.clear();
-		p8CardsField.clear();
-		p8EquityField.clear();
-		p9CardsField.clear();
-		p9EquityField.clear();
-		p10CardsField.clear();
-		p10EquityField.clear();
-	}
-
-	private Map<Button, TextField> createRandomCardMap() {
-		Map<Button, TextField> randomCardMap = new HashMap<>();
-		randomCardMap.put(p1RandomBtn, p1CardsField);
-		randomCardMap.put(p2RandomBtn, p2CardsField);
-		randomCardMap.put(p3RandomBtn, p3CardsField);
-		randomCardMap.put(p4RandomBtn, p4CardsField);
-		randomCardMap.put(p5RandomBtn, p5CardsField);
-		randomCardMap.put(p6RandomBtn, p6CardsField);
-		randomCardMap.put(p7RandomBtn, p7CardsField);
-		randomCardMap.put(p8RandomBtn, p8CardsField);
-		randomCardMap.put(p9RandomBtn, p9CardsField);
-		randomCardMap.put(p10RandomBtn, p10CardsField);
-
-		return randomCardMap;
-	}
-
-	private LinkedHashMap<TextField, TextField> createCardEquityMap() {
-		LinkedHashMap<TextField, TextField> cardEquityMap = new LinkedHashMap<>();
-
-		if (p1CardsField.getText().length() > 0) {
-			cardEquityMap.put(p1CardsField, p1EquityField);
+		for (RowController row : rows) {
+			row.clearFields();
 		}
-		if (p2CardsField.getText().length() > 0) {
-			cardEquityMap.put(p2CardsField, p2EquityField);
-		}
-		if (p3CardsField.getText().length() > 0) {
-			cardEquityMap.put(p3CardsField, p3EquityField);
-		}
-		if (p4CardsField.getText().length() > 0) {
-			cardEquityMap.put(p4CardsField, p4EquityField);
-		}
-		if (p5CardsField.getText().length() > 0) {
-			cardEquityMap.put(p5CardsField, p5EquityField);
-		}
-		if (p6CardsField.getText().length() > 0) {
-			cardEquityMap.put(p6CardsField, p6EquityField);
-		}
-		if (p7CardsField.getText().length() > 0) {
-			cardEquityMap.put(p7CardsField, p7EquityField);
-		}
-		if (p8CardsField.getText().length() > 0) {
-			cardEquityMap.put(p8CardsField, p8EquityField);
-		}
-		if (p9CardsField.getText().length() > 0) {
-			cardEquityMap.put(p9CardsField, p9EquityField);
-		}
-		if (p10CardsField.getText().length() > 0) {
-			cardEquityMap.put(p10CardsField, p10EquityField);
-		}
-		return cardEquityMap;
 	}
 }
