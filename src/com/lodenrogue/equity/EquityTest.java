@@ -21,7 +21,7 @@ public class EquityTest {
 
 		// testCombinations(cards);
 
-		//testEquity();
+		// testEquity();
 
 	}
 

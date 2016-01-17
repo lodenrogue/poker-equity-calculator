@@ -17,10 +17,13 @@ import javafx.application.Platform;
 
 public class EquityTask implements Runnable {
 	private Map<Player, RowController> playerRows;
+	private List<Card> board;
 	private boolean continueEval = true;
 
-	public EquityTask(LinkedHashMap<Player, RowController> playerRows) {
+	public EquityTask(LinkedHashMap<Player, RowController> playerRows, List<Card> board) {
 		this.playerRows = playerRows;
+		this.board = board;
+		// TODO use board when determining community cards
 	}
 
 	public void setContinue(boolean continueEval) {
@@ -37,6 +40,7 @@ public class EquityTask implements Runnable {
 			Deck deck = new Deck();
 			deck.shuffle();
 
+			removeFromDeck(deck, board);
 			dealHoleCards(deck, playerRows.keySet());
 			List<Card> community = getCommunityCards(deck);
 
@@ -49,6 +53,13 @@ public class EquityTask implements Runnable {
 			}
 			updateEquity(iterations++);
 		}
+
+		EquityController controller = EquityController.getInstance();
+		controller.stopEquity();
+	}
+
+	private void removeFromDeck(Deck deck, List<Card> cards) {
+		cards.forEach(card -> deck.getCard(card.getRank(), card.getSuit()));
 	}
 
 	private void dealHoleCards(Deck deck, Set<Player> players) {
@@ -88,7 +99,8 @@ public class EquityTask implements Runnable {
 
 	private List<Card> getCommunityCards(Deck deck) {
 		List<Card> community = new ArrayList<>();
-		for (int i = 0; i < 5; i++) {
+		community.addAll(board);
+		while (community.size() < 5) {
 			community.add(deck.deal());
 		}
 		return community;

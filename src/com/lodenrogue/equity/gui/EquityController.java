@@ -20,11 +20,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
 public class EquityController implements Initializable {
 	@FXML
 	private VBox vBox;
+	@FXML
+	private TextField boardField;
 	@FXML
 	private Button evaluateBtn;
 	@FXML
@@ -32,12 +35,32 @@ public class EquityController implements Initializable {
 
 	private EquityTask equityTask;
 	private boolean isEquityRunning = false;
-
 	private List<RowController> rows;
+
+	private static EquityController instance;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		instance = this;
 		Platform.runLater(() -> initializeRows());
+	}
+
+	@FXML
+	public void onButtonPressed(ActionEvent e) {
+		if (e.getSource().equals(evaluateBtn)) {
+			if (isEquityRunning) {
+				stopEquity();
+			}
+			else {
+				getEquity();
+			}
+		}
+		else if (e.getSource().equals(clearBtn)) {
+			if (isEquityRunning) {
+				stopEquity();
+			}
+			clearAllFields();
+		}
 	}
 
 	private void initializeRows() {
@@ -59,24 +82,6 @@ public class EquityController implements Initializable {
 		}
 	}
 
-	@FXML
-	public void onButtonPressed(ActionEvent e) {
-		if (e.getSource().equals(evaluateBtn)) {
-			if (isEquityRunning) {
-				stopEquity();
-			}
-			else {
-				getEquity();
-			}
-		}
-		else if (e.getSource().equals(clearBtn)) {
-			if (isEquityRunning) {
-				stopEquity();
-			}
-			clearAllFields();
-		}
-	}
-
 	private void getEquity() {
 		clearEquityFields();
 
@@ -87,7 +92,7 @@ public class EquityController implements Initializable {
 
 		for (RowController row : rows) {
 			if (row.getHand().length() > 0) {
-				List<Card> hand = CardUtils.parseCards(row.getHand(), deck);
+				List<Card> hand = CardUtils.parseHand(row.getHand(), deck);
 				if (hand == null) {
 					// TODO let the user know
 					System.out.println("Invalid hand format");
@@ -105,8 +110,10 @@ public class EquityController implements Initializable {
 			}
 		}
 
+		List<Card> board = getBoard(deck);
+
 		if (playerRows.size() > 0) {
-			equityTask = new EquityTask(playerRows);
+			equityTask = new EquityTask(playerRows, board);
 			new Thread(equityTask).start();
 			isEquityRunning = true;
 
@@ -114,7 +121,16 @@ public class EquityController implements Initializable {
 		}
 	}
 
-	private void stopEquity() {
+	private List<Card> getBoard(Deck deck) {
+		String boardString = boardField.getText();
+		List<Card> board = CardUtils.parseBoard(boardString, deck);
+		if (board == null) {
+			board = new ArrayList<>();
+		}
+		return board;
+	}
+
+	public void stopEquity() {
 		equityTask.setContinue(false);
 		isEquityRunning = false;
 		Platform.runLater(() -> evaluateBtn.setText("Evaluate"));
@@ -130,5 +146,10 @@ public class EquityController implements Initializable {
 		for (RowController row : rows) {
 			row.clearFields();
 		}
+		boardField.clear();
+	}
+
+	public static EquityController getInstance() {
+		return instance;
 	}
 }
