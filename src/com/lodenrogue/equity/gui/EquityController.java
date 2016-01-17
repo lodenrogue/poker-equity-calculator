@@ -42,6 +42,10 @@ public class EquityController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance = this;
+		TextFormatter formatter = new HandTextFormatter();
+		boardField.textProperty().addListener((observable, oldValue, newValue) -> {
+			boardField.setText(formatter.format(newValue));
+		});
 		Platform.runLater(() -> initializeRows());
 	}
 

@@ -21,7 +21,10 @@ public class RowController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
+		TextFormatter formatter = new HandTextFormatter();
+		handField.textProperty().addListener((observable, oldValue, newValue) -> {
+			handField.setText(formatter.format(newValue));
+		});
 	}
 
 	@FXML
