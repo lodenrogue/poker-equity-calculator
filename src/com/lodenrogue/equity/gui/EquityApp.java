@@ -17,6 +17,7 @@ public class EquityApp extends Application {
 			Scene scene = new Scene(root);
 			primaryStage.setScene(scene);
 			primaryStage.setResizable(false);
+			primaryStage.setTitle("Equity Calculator");
 			primaryStage.show();
 		}
 		catch (IOException e) {

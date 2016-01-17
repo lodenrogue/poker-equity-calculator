@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 public class RowController implements Initializable {
+	private static final String RANDOM_FLAG = "random";
+
 	@FXML
 	private Button playerBtn;
 	@FXML
@@ -21,15 +23,26 @@ public class RowController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		addTextChangeListener();
+	}
+
+	private void addTextChangeListener() {
 		TextFormatter formatter = new HandTextFormatter();
 		handField.textProperty().addListener((observable, oldValue, newValue) -> {
-			handField.setText(formatter.format(newValue));
+			if (handField.getUserData() != null && handField.getUserData().equals(RANDOM_FLAG)) {
+				handField.setUserData("");
+			}
+			else {
+				handField.setText(formatter.format(newValue));
+			}
 		});
 	}
 
 	@FXML
 	public void onButtonPressed(ActionEvent e) {
+		handField.setUserData(RANDOM_FLAG);
 		handField.setText("random");
+
 	}
 
 	public void setPlayerName(String name) {
