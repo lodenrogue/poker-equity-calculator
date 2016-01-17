@@ -89,6 +89,7 @@ public class EquityController implements Initializable {
 		deck.shuffle();
 
 		LinkedHashMap<Player, RowController> playerRows = new LinkedHashMap<>();
+		List<Card> board = getBoard(deck);
 
 		for (RowController row : rows) {
 			if (row.getHand().length() > 0) {
@@ -109,8 +110,6 @@ public class EquityController implements Initializable {
 				playerRows.put(player, row);
 			}
 		}
-
-		List<Card> board = getBoard(deck);
 
 		if (playerRows.size() > 0) {
 			equityTask = new EquityTask(playerRows, board);
