@@ -40,9 +40,10 @@ public class RowController implements Initializable {
 
 	@FXML
 	public void onButtonPressed(ActionEvent e) {
-		handField.setUserData(RANDOM_FLAG);
-		handField.setText("random");
-
+		if (e.getSource().equals(randomBtn)) {
+			handField.setUserData(RANDOM_FLAG);
+			handField.setText("random");
+		}
 	}
 
 	public void setPlayerName(String name) {
@@ -69,5 +70,4 @@ public class RowController implements Initializable {
 	public void setEquity(String equity) {
 		equityField.setText(equity);
 	}
-
 }
