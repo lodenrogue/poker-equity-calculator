@@ -1,4 +1,4 @@
-package com.lodenrogue.equity;
+package com.lodenrogue.equity.card;
 
 import java.util.ArrayList;
 import java.util.List;

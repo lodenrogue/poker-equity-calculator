@@ -7,8 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.lodenrogue.equity.Card;
+import com.lodenrogue.equity.Equity;
 import com.lodenrogue.equity.Player;
+import com.lodenrogue.equity.card.Card;
 
 import javafx.application.Platform;
 

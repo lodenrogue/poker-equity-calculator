@@ -1,13 +1,12 @@
-package com.lodenrogue.equity.gui;
+package com.lodenrogue.equity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.lodenrogue.equity.Card;
-import com.lodenrogue.equity.Deck;
-import com.lodenrogue.equity.Player;
+import com.lodenrogue.equity.card.Card;
+import com.lodenrogue.equity.card.Deck;
 import com.lodenrogue.equity.handranking.HandRankUtils;
 
 public class Equity {

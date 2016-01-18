@@ -2,7 +2,7 @@ package com.lodenrogue.equity.handranking;
 
 import java.util.Arrays;
 
-import com.lodenrogue.equity.Card;
+import com.lodenrogue.equity.card.Card;
 
 public class ThreeOfAKindStrategy implements RankStrategy {
 

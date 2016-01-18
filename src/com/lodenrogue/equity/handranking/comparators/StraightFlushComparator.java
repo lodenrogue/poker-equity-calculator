@@ -1,6 +1,6 @@
 package com.lodenrogue.equity.handranking.comparators;
 
-import com.lodenrogue.equity.Card;
+import com.lodenrogue.equity.card.Card;
 
 public class StraightFlushComparator implements CardComparator {
 	private CardComparator straightComp;

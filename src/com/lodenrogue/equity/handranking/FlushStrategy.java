@@ -1,7 +1,7 @@
 package com.lodenrogue.equity.handranking;
 
-import com.lodenrogue.equity.Card;
-import com.lodenrogue.equity.Suit;
+import com.lodenrogue.equity.card.Card;
+import com.lodenrogue.equity.card.Suit;
 
 public class FlushStrategy implements RankStrategy {
 

@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
-import com.lodenrogue.equity.Card;
-import com.lodenrogue.equity.CardUtils;
-import com.lodenrogue.equity.Deck;
 import com.lodenrogue.equity.Player;
+import com.lodenrogue.equity.card.Card;
+import com.lodenrogue.equity.card.CardUtils;
+import com.lodenrogue.equity.card.Deck;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

@@ -3,6 +3,10 @@ package com.lodenrogue.equity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lodenrogue.equity.card.Card;
+import com.lodenrogue.equity.card.Deck;
+import com.lodenrogue.equity.card.Rank;
+import com.lodenrogue.equity.card.Suit;
 import com.lodenrogue.equity.handranking.HandRank;
 import com.lodenrogue.equity.handranking.HandRankUtils;
 

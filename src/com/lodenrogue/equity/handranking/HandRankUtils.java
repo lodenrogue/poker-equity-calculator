@@ -3,9 +3,9 @@ package com.lodenrogue.equity.handranking;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.lodenrogue.equity.Card;
 import com.lodenrogue.equity.Player;
-import com.lodenrogue.equity.Rank;
+import com.lodenrogue.equity.card.Card;
+import com.lodenrogue.equity.card.Rank;
 import com.lodenrogue.equity.handranking.comparators.CardComparator;
 import com.lodenrogue.equity.handranking.comparators.FlushComparator;
 import com.lodenrogue.equity.handranking.comparators.FourOfAKindComparator;

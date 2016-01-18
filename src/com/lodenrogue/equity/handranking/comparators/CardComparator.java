@@ -2,7 +2,7 @@ package com.lodenrogue.equity.handranking.comparators;
 
 import java.util.Comparator;
 
-import com.lodenrogue.equity.Card;
+import com.lodenrogue.equity.card.Card;
 import com.lodenrogue.equity.handranking.HandRank;
 
 /**

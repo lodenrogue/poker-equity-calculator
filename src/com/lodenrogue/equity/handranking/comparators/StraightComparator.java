@@ -2,8 +2,8 @@ package com.lodenrogue.equity.handranking.comparators;
 
 import java.util.Arrays;
 
-import com.lodenrogue.equity.Card;
-import com.lodenrogue.equity.Rank;
+import com.lodenrogue.equity.card.Card;
+import com.lodenrogue.equity.card.Rank;
 import com.lodenrogue.equity.handranking.HandRankUtils;
 
 public class StraightComparator implements CardComparator {

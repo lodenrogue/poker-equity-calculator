@@ -1,4 +1,4 @@
-package com.lodenrogue.equity;
+package com.lodenrogue.equity.card;
 
 public enum Suit {
 	HEART, CLUB, SPADE, DIAMOND

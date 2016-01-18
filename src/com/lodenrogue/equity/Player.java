@@ -3,6 +3,8 @@ package com.lodenrogue.equity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lodenrogue.equity.card.Card;
+
 public class Player {
 	private String name;
 	private List<Card> hand;

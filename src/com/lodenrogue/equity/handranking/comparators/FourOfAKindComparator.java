@@ -3,8 +3,8 @@ package com.lodenrogue.equity.handranking.comparators;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.lodenrogue.equity.Card;
-import com.lodenrogue.equity.Rank;
+import com.lodenrogue.equity.card.Card;
+import com.lodenrogue.equity.card.Rank;
 
 public class FourOfAKindComparator implements CardComparator {
 

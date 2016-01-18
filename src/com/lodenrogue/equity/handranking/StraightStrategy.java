@@ -2,8 +2,8 @@ package com.lodenrogue.equity.handranking;
 
 import java.util.Arrays;
 
-import com.lodenrogue.equity.Card;
-import com.lodenrogue.equity.Rank;
+import com.lodenrogue.equity.card.Card;
+import com.lodenrogue.equity.card.Rank;
 
 public class StraightStrategy implements RankStrategy {
 

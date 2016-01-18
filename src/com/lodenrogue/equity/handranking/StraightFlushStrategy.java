@@ -1,6 +1,6 @@
 package com.lodenrogue.equity.handranking;
 
-import com.lodenrogue.equity.Card;
+import com.lodenrogue.equity.card.Card;
 
 public class StraightFlushStrategy implements RankStrategy {
 	private RankStrategy straight;

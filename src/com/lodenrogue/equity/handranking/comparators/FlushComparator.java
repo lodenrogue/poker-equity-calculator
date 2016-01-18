@@ -2,7 +2,7 @@ package com.lodenrogue.equity.handranking.comparators;
 
 import java.util.Arrays;
 
-import com.lodenrogue.equity.Card;
+import com.lodenrogue.equity.card.Card;
 
 public class FlushComparator implements CardComparator {
 
